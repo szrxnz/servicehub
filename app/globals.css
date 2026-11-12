@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-ink: #181c21;
+  --color-steel: #262c33;
+  --color-steel-2: #343b44;
+  --color-bone: #f1f2ee;
+  --color-paper: #fafaf8;
+  --color-line: #dcded6;
+  --color-hazard: #f5b800;
+  --color-hazard-soft: #fff1bd;
+  --color-signal: #d6361f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-kanit), "Noto Sans Thai", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    color-scheme: light;
+  }
+  body {
+    background: var(--color-bone);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-hazard);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-hazard);
+    color: var(--color-ink);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-hazard text-ink shadow-[0_3px_0_0_#9a7400] hover:brightness-105 active:translate-y-[2px] active:shadow-[0_1px_0_0_#9a7400];
+  }
+  .btn-dark {
+    @apply bg-ink text-white hover:bg-steel-2 active:scale-[0.97];
+  }
+  .btn-line {
+    @apply border border-line bg-white text-ink hover:bg-bone active:scale-[0.97];
+  }
+  .card {
+    @apply rounded-xl border border-line bg-white;
+  }
+  .input {
+    @apply w-full rounded-lg border border-line bg-white px-4 py-2.5 text-ink transition placeholder:text-slate-400 focus:border-ink focus:outline-none focus:ring-2 focus:ring-hazard;
+  }
+}
+
+/* ฉากเปิดหน้า: ค่อย ๆ เลื่อนขึ้นทีละรายการ */
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.rise {
+  animation: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* ป้ายแถบเหลือง-ดำ วิ่งเหมือนสายพาน */
+@keyframes stripes {
+  to { background-position-x: 39.6px; }
+}
+.stripes {
+  background-image: repeating-linear-gradient(-45deg, var(--color-hazard) 0 14px, var(--color-ink) 14px 28px);
+  background-size: 39.6px 39.6px;
+}
+.stripes-move {
+  animation: stripes 1.4s linear infinite;
+}
+
+@keyframes lift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+.lift {
+  animation: lift 2.4s ease-in-out infinite;
+}
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.pop {
+  animation: pop 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}
+.toast-in {
+  animation: toast-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes blink {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  animation: blink 1.1s infinite ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

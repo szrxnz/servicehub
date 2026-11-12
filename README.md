@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Service Hub
 
-## Getting Started
+ระบบจัดการงานซ่อมบำรุง (Next.js + NextAuth + Supabase + Cerebras)
 
-First, run the development server:
+- **Dashboard** – ดู/ค้นหา/เปลี่ยนสถานะ/ลบใบงาน
+- **คลังความรู้** – บันทึกอาการเสียและวิธีแก้ตามรุ่นเครื่อง
+- **AI ช่วยงาน** – ถามอาการเสีย / สรุปงานล่าสุด
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## เริ่มใช้งาน
+
+1. `npm install`
+2. คัดลอก `.env.example` เป็น `.env.local` แล้วกรอกค่า
+3. รัน `supabase/supabase.sql` ใน Supabase SQL Editor
+4. `npm run dev` แล้วเปิด http://localhost:3000
+
+## หมายเหตุ
+
+- ข้อมูลแยกตามบัญชี: ใบงาน คลังความรู้ และข้อมูลที่ AI เห็น กรองด้วยอีเมลที่ login (`user_id`) ทุกครั้ง แต่ละบัญชีเห็น แก้ และลบได้เฉพาะของตัวเอง
+- ข้อมูลทั้งหมดผ่าน API route ฝั่งเซิร์ฟเวอร์ (`app/api/*`) ที่ตรวจ login ก่อนทุกครั้ง
+  หน้าเว็บไม่ได้เชื่อมต่อ Supabase โดยตรง จึงไม่ต้องใช้ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SECRET_KEY` ต้องอยู่ฝั่งเซิร์ฟเวอร์เท่านั้น (ห้ามขึ้นต้นด้วย `NEXT_PUBLIC_`)
+- ตั้ง `ALLOWED_EMAILS` เพื่อจำกัดว่าใครเข้าระบบได้ มิฉะนั้นทุกบัญชี Google จะเข้าได้
+- ตรวจโค้ด: `npm run typecheck` และ `npm run lint`
+
+## โครงสร้าง
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+app/
+  api/{auth,jobs,knowledge,ai}/   API routes (ตรวจ session ทุกตัว)
+  login/  dashboard/{new,knowledge,ai}/
+components/   FullPageSpinner, ErrorBanner
+hooks/        useRequireAuth
+lib/          auth, http (validation), api-client, supabase-admin, types
+supabase/     supabase.sql
+```

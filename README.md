@@ -26,9 +26,10 @@
 
 ```
 app/
+  page.tsx                        "/" → redirect ไป /dashboard
   api/{auth,jobs,knowledge,ai}/   API routes (ตรวจ session ทุกตัว)
   login/  dashboard/{new,knowledge,ai}/
-components/   FullPageSpinner, ErrorBanner
+components/   AppShell, CountUp, ErrorBanner, FullPageSpinner, Toast
 hooks/        useRequireAuth
 lib/          auth, http (validation), api-client, supabase-admin, types
 supabase/     supabase.sql
